@@ -1,0 +1,99 @@
+% zeichnet einen Würfel mit gegebener Kantenlänge
+\newcommand{\ZeichneWuerfel}[1]{% kantenlaenge
+    \begin{tikzpicture}[]
+        \def\a{#1}
+        
+        \coordinate (A) at (0,0,0); 
+        \coordinate (B) at (\a,0,0) ;
+        \coordinate (C) at (\a,\a,0); 
+        \coordinate (D) at (0,\a,0); 
+        \coordinate (E) at (0,0,-\a); 
+        \coordinate (F) at (\a,0,-\a); 
+        \coordinate (G) at (\a,\a,-\a); 
+        \coordinate (H) at (0,\a,-\a);
+        % Kanten zeichnen
+        \draw[] (A) -- (B) -- (C) -- (D) -- (A);
+        \draw[] (B) -- (F) -- (G) -- (C);
+        \draw[] (G) -- (H) -- (D);
+        \draw[densely dashed] (A) -- (E) -- (F);
+        \draw[densely dashed] (E) -- (H);
+    \end{tikzpicture} 
+}
+
+% zeichnet eine Pyramide mit quadratischer Grundfläche
+\newcommand{\ZeichneQuadratischePyramide}[2]{% kantenlaenge, hoehe
+    \begin{tikzpicture}[]
+        \def\a{#1}
+        \def\h{#2}
+        
+        \coordinate (A) at (0,0,0); 
+        \coordinate (B) at (\a,0,0) ;
+        \coordinate (C) at (\a,0,-\a); 
+        \coordinate (D) at (0,0,-\a); 
+        \coordinate (S) at (\a,\h,\a); 
+        % Kanten zeichnen
+        \draw[] (A) -- (B) -- (C);
+        \draw[] (A) -- (S);
+        \draw[] (B) -- (S);
+        \draw[] (C) -- (S);
+        \draw[densely dashed] (C) -- (D) -- (A);
+        \draw[densely dashed] (D) -- (S);
+    \end{tikzpicture} 
+}
+
+% Amperemeter ohne Pfeil
+\def\pgf@circ@myamperemeter@path#1{\pgf@circ@bipole@path{myamperemeter}{#1}}
+\tikzset{myamperemeter/.style = {\circuitikzbasekey, /tikz/to
+                               path=\pgf@circ@myamperemeter@path}}
+\pgfcircdeclarebipole{}{\ctikzvalof{bipoles/amperemeter/height}}{myamperemeter}
+    {\ctikzvalof{bipoles/amperemeter/height}}{\ctikzvalof{bipoles/amperemeter/width}}
+{
+  \def\pgf@circ@temp{right}
+  \ifx\tikz@res@label@pos\pgf@circ@temp
+    \pgf@circ@res@step=-1.2\pgf@circ@res@up
+  \else
+    \def\pgf@circ@temp{below}
+    \ifx\tikz@res@label@pos\pgf@circ@temp
+      \pgf@circ@res@step=-1.2\pgf@circ@res@up
+    \else
+      \pgf@circ@res@step=1.2\pgf@circ@res@up
+    \fi
+  \fi
+
+  \pgfpathmoveto{\pgfpoint{\pgf@circ@res@left}{\pgf@circ@res@zero}}     
+  \pgfpointorigin   \pgf@circ@res@other =  \pgf@x
+  \advance \pgf@circ@res@other by -\pgf@circ@res@up
+  \pgfpathlineto{\pgfpoint{\pgf@circ@res@other}{\pgf@circ@res@zero}}
+  \pgfusepath{draw}
+
+  \pgfsetlinewidth{\pgfkeysvalueof{/tikz/circuitikz/bipoles/thickness}
+                   \pgfstartlinewidth}
+
+  \pgfscope
+    \pgfpathcircle{\pgfpointorigin}{\pgf@circ@res@up}
+    \pgfusepath{draw}       
+  \endpgfscope  
+
+  \pgfsetlinewidth{\pgfstartlinewidth}
+  \pgftransformrotate{90} % rotate the label
+  %\pgfpathmoveto{\pgfpoint{-\pgf@circ@res@other}{.8\pgf@circ@res@up}}
+  %\pgfpathlineto{\pgfpoint{\pgf@circ@res@other}{.8\pgf@circ@res@down}}
+  %\pgfusepath{draw}
+  \pgfnode{circle}{center}{\textbf{A}}{}{}
+  \pgfscope
+    % \pgftransformshift{\pgfpoint{-\pgf@circ@res@other}{.8\pgf@circ@res@up}}
+    % \pgftransformrotate{45}
+    % \pgfnode{currarrow}{center}{}{}{\pgfusepath{stroke}}
+  \endpgfscope
+
+  \pgfpathmoveto{\pgfpoint{-\pgf@circ@res@other}{\pgf@circ@res@zero}}
+  \pgfpathlineto{\pgfpoint{\pgf@circ@res@right}{\pgf@circ@res@zero}}
+  \pgfusepath{draw}
+
+  \pgfusepath{stroke}   
+}
+
+% Kreuze (z.B. für Magnetfeld)
+\tikzset{cross/.style={cross out, draw=black, minimum size=2*(#1-\pgflinewidth), inner sep=0pt, outer sep=0pt},
+    %default radius will be 1pt. 
+    cross/.default={1pt}}
